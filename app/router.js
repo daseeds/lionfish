@@ -5,6 +5,9 @@ Router.map(function() {
   this.route('helper-test');
   this.resource('users', {path: '/users'});
   this.resource('user', {path: '/users/:user_id'});
+  this.resource('dives', {path: '/dives'});
+  this.resource('dive.new',  {path:'/dive/new'});  
+  this.resource('dive', {path: '/dive/:dive_id'});
   // this.resource('posts', function() {
   //   this.route('new');
   // });
