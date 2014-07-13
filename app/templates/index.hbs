@@ -1,5 +1,8 @@
-<ul>
-{{#each}}
-  <li>{{this}}</li>
-{{/each}}
-</ul>
+      <div class="page-header">
+        <h1>Multiple External Providers example</h1>
+      </div>
+      {{#unless session.isAuthenticated}}
+        <div class="alert alert-info">
+          You can {{#link-to 'login' class="alert-link"}}login{{/link-to}} with your <i class="fa fa-facebook-square"></i> Facebook or <i class="fa fa-google-plus-square"></i> Google+ account.
+        </div>
+      {{/unless}}

@@ -10,3 +10,8 @@
 window.ENV = window.ENV || {};
 
 window.ENV.MODEL_FACTORY_INJECTIONS = true;
+
+// enable token revokation
+window.ENV['simple-auth-oauth2'] = {
+	serverTokenRevokationEndpoint: '/revoke',
+};

@@ -1,4 +1,4 @@
-export default Ember.Route.extend({
+export default Ember.Route.extend(SimpleAuth.ApplicationRouteMixin, {
   actions: {
     goToNewDive: function() {
       this.transitionTo('dive.new');
