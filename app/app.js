@@ -118,6 +118,7 @@ App.GooglePlusAuthenticator = SimpleAuth.Authenticators.Base.extend({
                                 userPic: resp.picture,
                                 userGender: resp.gender,
                        });
+                       console.log(userEmail)
                    },
                    function(rej) {
                        reject(rej);

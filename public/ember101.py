@@ -42,10 +42,10 @@ class Dive(ndb.Model):
 	modification_date = ndb.DateTimeProperty(auto_now =True)
 	modification_author = ndb.UserProperty()
 	user = ndb.KeyProperty(User)
-	max_depth = ndb.IntegerProperty()
-	avg_depth = ndb.IntegerProperty()
+	max_depth = ndb.StringProperty()
+	avg_depth = ndb.StringProperty()
 	dive_date = ndb.DateTimeProperty()
-	dive_duration = ndb.IntegerProperty()
+	dive_duration = ndb.StringProperty()
 	dive_coordinates = ndb.StringProperty()
 
 
@@ -237,6 +237,13 @@ class DivesHandler(BaseHandler):
 			#current['creation_author'] = dive.creation_author.email
 			current['modification_date'] = dive.modification_date.strftime("%Y-%m-%d %H:%M:%S")
 			#current['modification_author'] = dive.modification_author.email
+			current['max_depth'] = dive.max_depth
+
+			current['avg_depth'] = dive.avg_depth
+			if (dive.dive_date):
+				current['dive_date'] = dive.dive_date.strftime("%Y-%m-%d %H:%M:%S")
+			current['dive_duration'] = dive.dive_duration
+			current['dive_coordinates'] = dive.dive_coordinates
 			obj['dive'].append(current)
 		logging.info(obj)
 
@@ -246,7 +253,13 @@ class DivesHandler(BaseHandler):
 		# return self.response.write('{"contacts":[{"id":"abcdefg","first":"Ryan","last":"Florence","avatar":"http://www.gravatar.com/avatar/749001c9fe6927c4b069a45c2a3d68f7.jpg"},{"id":"123456","first":"Stanley","last":"Stuart","avatar":"https://si0.twimg.com/profile_images/3579590697/63fd9d3854d38fee706540ed6611eba7.jpeg"},{"id":"1a2b3c","first":"Eric","last":"Berry","avatar":"https://si0.twimg.com/profile_images/3254281604/08df82139b53dfa4a3a5adfa7e99426e.jpeg"}]}')
 	def post(self):
 		request = json.loads(cgi.escape(self.request.body))
+		logging.info(request)
 		dive = Dive()
+		dive.max_depth = request['dive']['max_depth']
+		dive.avg_depth = request['dive']['avg_depth']
+		dive.dive_date = request['dive']['dive_date']
+		dive.dive_duration = request['dive']['dive_duration']
+		dive.dive_coordinates = request['dive']['dive_coordinates']
 		dive.put()
 		
 		#current_user = users.get_current_user()
@@ -279,6 +292,13 @@ class DiveHandler(BaseHandler):
 
 	def delete(self, dive_id):
 		ndb.Key(Dive, int(dive_id)).delete()
+	def options(self, dive_id):
+		self.response.headers['Content-Type'] = 'application/json'
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
+		self.response.headers['Access-Control-Allow-Headers'] = 'accept, content-type'
+		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
+		return self.response.set_status(200)
+
 
 class OAuth2Callback(BaseHandler):
 	def get(self):
@@ -290,11 +310,12 @@ class OAuth2Callback(BaseHandler):
 		logging.info(self.request.get('authuser'))
 		logging.info(self.request.get('num_sessions'))
 		logging.info(self.request.get('session_state'))
+		return self.response.set_status(200)
 	def options(self):
 		self.response.headers['Content-Type'] = 'application/json'
 		self.response.headers['Access-Control-Allow-Origin'] = '*'
 		self.response.headers['Access-Control-Allow-Headers'] = 'accept, content-type'
-		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+		self.response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
 		return self.response.set_status(200)
 	def post(self):
 		request = json.loads(cgi.escape(self.request.body))
